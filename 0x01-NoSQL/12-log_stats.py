@@ -5,7 +5,8 @@ from pymongo import MongoClient
 
 
 def print_stats():
-    client = MongoClient('localhost', 27017)
+    """prints stats"""
+    client = MongoClient('mongodb://127.0.0.1:27017')
     db = client.logs
     collection = db.nginx
 
@@ -27,4 +28,5 @@ def print_stats():
 
 
 if __name__ == "__main__":
+    """main"""
     print_stats()
