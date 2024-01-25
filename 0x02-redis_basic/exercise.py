@@ -18,6 +18,7 @@ def count_calls(method: Callable) -> Callable:
 
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     """decorator to store the history of inputs
     and outputs for a particular function."""
@@ -34,6 +35,7 @@ def call_history(method: Callable) -> Callable:
         return output_data
 
     return wrapper
+
 
 def replay(method: Callable) -> None:
     """Print replay information for the given method."""
@@ -52,6 +54,7 @@ def replay(method: Callable) -> None:
         out_str = out.decode("utf-8")
         print("{}(*{}) -> {}".format(method.__qualname__, inp_str, out_str))
 
+
 class Cache:
     """Representation of the Cache"""
     def __init__(self):
@@ -67,7 +70,10 @@ class Cache:
         self._redis.set(key, data)
         return key
 
-    def get(self, key: str, fn: Callable = None) -> Union[str, bytes, int, float]:
+    def get(
+            self,
+            key: str,
+            fn: Callable = None) -> Union[str, bytes, int, float]:
         """function that retrieves data from redis"""
         data = self._redis.get(key)
         if fn and data:
