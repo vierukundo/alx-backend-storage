@@ -37,23 +37,20 @@ def call_history(method: Callable) -> Callable:
 
 def replay(method: Callable) -> None:
     """Print replay information for the given method."""
-    class_name = method.__self__.__class__.__name__
-    method_name = method.__name__
-    qualified_name = method.__qualname__
-    input_key = f"{qualified_name}:inputs"
-    output_key = f"{qualified_name}:outputs"
+    input_key = "{}:inputs".format(method.__qualname__)
+    output_key = "{}:outputs".format(method.__qualname__)
 
     inputs = method.__self__._redis.lrange(input_key, 0, -1)
     outputs = method.__self__._redis.lrange(output_key, 0, -1)
 
     num_calls = len(inputs)
 
-    print(f"{qualified_name} from class {class_name} and method {method_name} was called {num_calls} times:")
+    print("{} was called {} times:".format(method.__qualname__, num_calls))
 
     for inp, out in zip(inputs, outputs):
-        input_str = inp.decode("utf-8")
-        output_str = out.decode("utf-8")
-        print(f"{qualified_name}(*{input_str}) -> {output_str}")
+        inp_str = inp.decode("utf-8")
+        out_str = out.decode("utf-8")
+        print("{}(*{}) -> {}".format(method.__qualname__, inp_str, out_str))
 
 class Cache:
     """Representation of the Cache"""
