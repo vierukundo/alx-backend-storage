@@ -1,9 +1,22 @@
 #!/usr/bin/env python3
 """Writing strings to Redis"""
-from typing import Union, Callable
+from typing import Union, Callable, Any
+from functools import wraps
 import redis
 import uuid
 
+
+def count_calls(method: Callable) -> Callable:
+    """Decorator to count the number of calls to a class method."""
+    key = method.__qualname__
+
+    @wraps(method)
+    def wrapper(self: Any, *args: Any, **kwargs: Any) -> Any:
+        """Wrapper function that increments a key in Redis for Cache.store"""
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+
+    return wrapper
 
 class Cache:
     """Representation of the Cache"""
@@ -12,6 +25,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """store method"""
         key = str(uuid.uuid4())
